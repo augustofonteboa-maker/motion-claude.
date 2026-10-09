@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer-when-downgrade">
 <meta property="og:title" content="Fonte Motion">
-<meta property="og:description" content="Motions feitos com o Claude por @_augustofonte, com o prompt de cada um.">
+<meta property="og:description" content="Motions feitos com o Claude por @_augustofonte e pela comunidade, com o prompt de cada um.">
 <title>Fonte Motion</title>
 <meta name="description" content="Galeria de vídeos de motion design feitos com o Claude por @_augustofonte, com o prompt por trás de cada um.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -154,6 +155,30 @@ footer nav{display:flex;gap:18px}
 .nav button:hover{color:var(--fg);border-color:var(--line-2)}
 
 /* comunidade */
+.masonry{display:flex;gap:18px;align-items:flex-start;padding-block:28px 12px}
+.mcol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:24px}
+.mcard{display:flex;flex-direction:column;gap:10px;min-width:0}
+.media{position:relative;display:block;width:100%;max-width:100%;aspect-ratio:16 / 9;border-radius:14px;overflow:hidden;background:var(--surface);border:1px solid var(--line);transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .2s,box-shadow .25s}
+.media .ph{position:absolute;inset:0;opacity:.55}
+.media .ph svg{width:100%;height:100%;display:block}
+.media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s;background:transparent}
+.mcard.live .media video{opacity:1}
+.mcard:not(.live):not(.nov) .media::after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px;border-radius:50%;border:2px solid rgba(250,245,255,.25);border-top-color:var(--lilac);animation:spin .9s linear infinite}
+.mcard.nov .media::after{content:"▶ ver no X";position:absolute;right:8px;bottom:8px;font-family:var(--f-mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:rgba(20,7,31,.75);color:var(--fg)}
+.media:hover{transform:translateY(-3px);border-color:var(--violet);box-shadow:0 14px 30px -18px rgba(175,94,255,.7)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.by{display:inline-flex;align-items:center;gap:9px;min-width:0;text-decoration:none;font-size:14.5px;font-weight:500;color:var(--fg)}
+.by .h{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+a.by:hover .h{text-decoration:underline;text-underline-offset:3px}
+.pic{position:relative;width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;overflow:hidden;background:var(--lilac);color:#14071F;font-family:var(--f-serif);font-style:italic;font-weight:700;font-size:12px}
+.pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pic.star{background:var(--violet)}
+.pic.star svg{width:14px;height:14px}
+.pill2{flex:none;border:1px solid var(--line-2);border-radius:999px;padding:3px 11px;font-size:12.5px;color:var(--muted)}
+.stage.vid{background:#000}
+.stage.vid video{object-fit:contain}
+.stage.vid.tall{width:auto;height:min(68vh,640px)}
 .stage.embed{aspect-ratio:auto;height:auto;min-height:320px;max-height:78vh;overflow:auto;background:var(--bg)}
 .tw{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px}
 .tw .twitter-tweet{margin:0 auto!important}
@@ -208,7 +233,7 @@ footer nav{display:flex;gap:18px}
     <div>
       <p class="eyebrow">por @_augustofonte</p>
       <h1>Motion feito no <em>Claude,</em> com o prompt aberto.</h1>
-      <p class="lede">Uma galeria dos vídeos de motion design que eu crio com o Claude, com o prompt completo para copiar. Na aba Comunidade, os motions de outros criadores, com o vídeo tocando direto do post original de cada autor no X.</p>
+      <p class="lede">Uma galeria dos vídeos de motion design que eu crio com o Claude, com o prompt completo para copiar. Na aba Comunidade, os motions de outros criadores, com o vídeo de cada um tocando e o crédito do dono oficial.</p>
       <ul class="facts">
         <li id="fact-count">12 motions meus</li>
         <li id="fact-comm">233 da comunidade</li>
@@ -247,8 +272,8 @@ footer nav{display:flex;gap:18px}
 <main class="wrap">
   <div class="grid" id="grid"></div>
   <section id="comm" hidden aria-label="Comunidade">
-    <p class="comm-note">Motions feitos com o Claude por outros criadores. Abra um card e o vídeo toca direto do post original do autor no X, com o crédito dele. O prompt de cada um fica na entrada original. Lista via <a href="https://www.prompt-motion.com/" target="_blank" rel="noopener">Prompt Motion</a>, curadoria de <a href="https://x.com/p4nthera_" target="_blank" rel="noopener">@p4nthera_</a>.</p>
-    <div class="grid" id="cgrid"></div>
+    <p class="comm-note">Motions feitos com o Claude por outros criadores, exibidos com autorização. Cada vídeo vem do post original no X e pertence ao autor indicado embaixo dele, o dono oficial. Toque no @ para ver o perfil ou no vídeo para abrir o motion. Lista via <a href="https://www.prompt-motion.com/" target="_blank" rel="noopener">Prompt Motion</a>, curadoria de <a href="https://x.com/p4nthera_" target="_blank" rel="noopener">@p4nthera_</a>.</p>
+    <div class="masonry" id="cgrid"></div>
     <div class="more"><button class="chip" id="more">Carregar mais</button><span id="more-count"></span></div>
   </section>
   <footer>
@@ -284,7 +309,7 @@ footer nav{display:flex;gap:18px}
       <h2 id="m-title"></h2>
       <ul class="m-tags" id="m-tags"></ul>
       <section class="credit" id="m-credit" hidden>
-        <p>Vídeo e prompt de <b id="m-credit-name"></b>. O vídeo toca direto do post original no X, com o crédito do autor. O prompt completo está na entrada do Prompt Motion.</p>
+        <p>Dono oficial do vídeo: <b id="m-credit-name"></b>. O vídeo vem do post original no X e é exibido com autorização do autor. O prompt completo está na entrada do Prompt Motion.</p>
         <div class="credit-actions">
           <a class="btn" id="m-orig" href="#" target="_blank" rel="noopener">Ver prompt ↗</a>
           <a class="pill" id="m-x" href="#" target="_blank" rel="noopener">Abrir post no X ↗</a>
@@ -637,6 +662,37 @@ function loadTweet(e,box){
   twttrLoad().then(t=>t.widgets.createTweet(e.tid,box,{theme:'dark',dnt:true,align:'center',conversation:'none'}))
     .then(el=>{clearTimeout(timer);if(!box.isConnected)return;if(el){box.dataset.done='1';const l=box.querySelector('.tw-load');if(l)l.remove()}else fail()})
     .catch(()=>{clearTimeout(timer);fail()})}
+
+/* vídeo de cada post do X, resolvido no navegador (FxTwitter, com vxTwitter de reserva) */
+const twMem={},twMeta={};
+const fq=[];let fActive=0;
+function enqueue(fn){return new Promise((res,rej)=>{fq.push([fn,res,rej]);pump()})}
+function pump(){while(fActive<6&&fq.length){const[fn,res,rej]=fq.shift();fActive++;fn().then(res,rej).finally(()=>{fActive--;pump()})}}
+function pickVariant(v){const vs=(v.variants||[]).filter(x=>x&&x.url&&String(x.content_type||x.type||'').includes('mp4'));
+  if(!vs.length)return v.url;vs.sort((a,b)=>(a.bitrate||0)-(b.bitrate||0));let best=vs[0];for(const x of vs)if((x.bitrate||0)<=2200000)best=x;return best.url}
+async function viaFx(e){const r=await fetch(`https://api.fxtwitter.com/${encodeURIComponent(e.handle)}/status/${e.tid}`);if(!r.ok)throw new Error('fx');
+  const j=await r.json(),tw=j.tweet||{},v=((tw.media||{}).videos||[])[0];if(!v)throw new Error('fx-novideo');
+  return{src:pickVariant(v),thumb:v.thumbnail_url||'',w:v.width||16,h:v.height||9,avatar:(tw.author||{}).avatar_url||'',name:(tw.author||{}).name||''}}
+async function viaVx(e){const r=await fetch(`https://api.vxtwitter.com/${encodeURIComponent(e.handle)}/status/${e.tid}`);if(!r.ok)throw new Error('vx');
+  const j=await r.json(),v=(j.media_extended||[]).find(m=>m.type==='video'||m.type==='gif');if(!v)throw new Error('vx-novideo');
+  return{src:v.url,thumb:v.thumbnail_url||'',w:(v.size||{}).width||16,h:(v.size||{}).height||9,avatar:j.user_profile_image_url||'',name:j.user_name||''}}
+function resolveTweet(e){if(twMem[e.tid])return twMem[e.tid];
+  let cached=null;try{const c=JSON.parse(localStorage.getItem('fm1-'+e.tid)||'null');if(c&&c.src&&Date.now()-c.t<3*864e5)cached=c}catch(_){}
+  const p=cached?Promise.resolve(cached):enqueue(()=>viaFx(e)).catch(()=>enqueue(()=>viaVx(e))).then(m=>{m.t=Date.now();try{localStorage.setItem('fm1-'+e.tid,JSON.stringify(m))}catch(_){}return m});
+  twMem[e.tid]=p.then(m=>{twMeta[e.tid]=m;return m});twMem[e.tid].catch(()=>{});return twMem[e.tid]}
+
+/* grade em mosaico: colunas preenchidas da esquerda para a direita */
+const colsFor=w=>w>=1180?4:w>=900?3:w>=560?2:1;
+function masonry(box,nodes){const n=colsFor(box.clientWidth||window.innerWidth);box.innerHTML='';
+  const cols=[...Array(n)].map(()=>{const d=document.createElement('div');d.className='mcol';box.appendChild(d);return d});
+  nodes.forEach((nd,i)=>cols[i%n].appendChild(nd));box._n=n;box._nodes=nodes}
+window.addEventListener('resize',()=>{const b=document.getElementById('cgrid');if(b&&b._nodes&&b._nodes.length&&colsFor(b.clientWidth)!==b._n)masonry(b,b._nodes)});
+function syncPlay(card){const v=card.querySelector('video');if(!v||!v.getAttribute('src'))return;if(card._vis&&playing){v.muted=true;const p=v.play();if(p&&p.catch)p.catch(()=>{})}else v.pause()}
+function applyMeta(card,m){const a=card.querySelector('.media');a.style.aspectRatio=m.w+' / '+m.h;const v=card.querySelector('video');
+  v.muted=true;if(m.thumb)v.poster=m.thumb;v.addEventListener('loadeddata',()=>card.classList.add('live'),{once:true});v.src=m.src;
+  if(m.avatar){const p=card.querySelector('.pic');if(p&&!p.querySelector('img')){const im=new Image();im.alt='';im.loading='lazy';im.referrerPolicy='no-referrer';im.onerror=()=>im.remove();im.src=m.avatar;p.appendChild(im)}}}
+function hydrate(card,e){if(card._h)return;card._h=1;resolveTweet(e).then(m=>{applyMeta(card,m);syncPlay(card)}).catch(()=>card.classList.add('nov'))}
+const vio=new IntersectionObserver(es=>{for(const en of es){const card=en.target;card._vis=en.isIntersecting;if(en.isIntersecting)hydrate(card,COMM[+card.dataset.ci]);syncPlay(card)}},{rootMargin:'300px 0px'});
 const PAIRS=[[C.ink,C.violet],[C.violet,C.paper],[C.paper,C.violet],[C.lilac,C.ink],[C.deep,C.lilac],[C.mid,C.lilac]];
 function hsh(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
 const starD=(cx,cy,r)=>`M${cx} ${cy-r}A${r} ${r} 0 0 0 ${cx+r} ${cy}A${r} ${r} 0 0 0 ${cx} ${cy+r}A${r} ${r} 0 0 0 ${cx-r} ${cy}A${r} ${r} 0 0 0 ${cx} ${cy-r}Z`;
@@ -662,7 +718,8 @@ $('#n-mine').textContent=ENTRIES.length;$('#n-comm').textContent=COMM.length;
 const grid=$('#grid');
 ENTRIES.forEach((e,idx)=>{
   const a=document.createElement('a');a.className='card';a.href='#'+e.slug;a.dataset.slug=e.slug;
-  a.innerHTML=`<div class="thumb">${e.video?`<video src="${esc(e.video)}" muted loop playsinline autoplay preload="metadata"></video>`:`<canvas aria-hidden="true"></canvas>`}<span class="who"><span class="av">${STAR}</span>@_augustofonte</span><span class="kind ${e.type==='Skill'?'skill':''}">${e.type}</span></div><div class="cap2"><span class="ttl">${esc(e.title)}</span><span class="tg">${e.tags.map(esc).join(' · ')}</span></div>`;
+  a.title=e.title;
+  a.innerHTML=`<div class="thumb">${e.video?`<video src="${esc(e.video)}" muted loop playsinline autoplay preload="metadata"></video>`:`<canvas aria-hidden="true"></canvas>`}</div><div class="foot"><span class="by"><span class="pic star">${STAR}</span><span class="h">@_augustofonte</span></span><span class="pill2">${e.type}</span></div>`;
   a.setAttribute('aria-label',e.title+', ver prompt');
   a.addEventListener('click',ev=>{ev.preventDefault();openModal({k:'mine',i:idx},a)});
   grid.appendChild(a);
@@ -676,18 +733,23 @@ $('#home').addEventListener('click',ev=>{ev.preventDefault();window.scrollTo({to
 
 /* comunidade: grade paginada */
 const cgrid=$('#cgrid'),PAGE=48;let commLimit=PAGE,commList=[];
-function commCard(e,i){const t=thumbArt(e.slug),ini=initial(e.handle);
-  return `<a class="card" href="#c-${esc(e.slug)}" data-ci="${i}" aria-label="${esc(e.title)}, crédito e link para o original"><div class="thumb cthumb">${t.svg}<span class="ini" style="color:${t.fg}">${ini}</span><span class="ext">▶ post no X</span><span class="who"><span class="av ini-av">${ini}</span>@${esc(e.handle)}</span><span class="kind ${e.types.includes('Skill')?'skill':''}">${esc(e.typeLabel)}</span></div><div class="cap2"><span class="ttl">${esc(e.title)}</span><span class="tg">@${esc(e.handle)} · ${fmtDate(e.date)}${e.tags.length?' · '+e.tags.map(esc).join(' · '):''}</span></div></a>`}
-function renderComm(){
+function commCard(e,i){const t=thumbArt(e.slug),ini=initial(e.handle),m=twMeta[e.tid];
+  return `<div class="mcard" data-ci="${i}"><a class="media" href="#c-${esc(e.slug)}" data-open="${i}" aria-label="${esc(e.title)}, vídeo de @${esc(e.handle)}" style="aspect-ratio:${m?m.w+' / '+m.h:'16 / 9'}"><span class="ph">${t.svg}</span><video muted loop playsinline preload="none"></video></a><div class="foot"><a class="by" href="${e.x}" target="_blank" rel="noopener" title="Dono oficial do vídeo: @${esc(e.handle)}"><span class="pic">${ini}</span><span class="h">@${esc(e.handle)}</span></a><span class="pill2">${esc(e.typeLabel)}</span></div></div>`}
+let commNodes=[];
+function renderComm(reset=true){
   const q=($('#q').value||'').trim().toLowerCase().replace(/^@/,'');
   commList=COMM.map((e,i)=>i).filter(i=>{const e=COMM[i];return(state.type==='Todos'||e.types.includes(state.type))&&(!state.tag||e.tags.includes(state.tag))&&(!q||e.handle.toLowerCase().includes(q)||e.title.toLowerCase().includes(q))});
-  cgrid.innerHTML=commList.slice(0,commLimit).map(i=>commCard(COMM[i],i)).join('')||'<div class="empty">Nenhum criador encontrado.<br><button class="chip" data-clear>Limpar busca</button></div>';
-  const shown=Math.min(commLimit,commList.length);
+  if(reset){vio.disconnect();commNodes.forEach(n=>{const v=n.querySelector('video');if(v)v.pause()});commNodes=[]}
+  const want=commList.slice(0,commLimit);
+  for(let k=commNodes.length;k<want.length;k++){const tmp=document.createElement('div');tmp.innerHTML=commCard(COMM[want[k]],want[k]);const nd=tmp.firstElementChild;commNodes.push(nd)}
+  if(!want.length){cgrid.innerHTML='<div class="empty">Nenhum motion encontrado.<br><button class="chip" data-clear>Limpar filtros</button></div>';cgrid._nodes=null}
+  else{masonry(cgrid,commNodes);commNodes.forEach(nd=>vio.observe(nd))}
+  const shown=want.length;
   $('#more').hidden=shown>=commList.length;
   $('#more-count').textContent=commList.length?`${shown} de ${commList.length}`:'';
 }
-cgrid.addEventListener('click',ev=>{const a=ev.target.closest('[data-ci]');if(!a)return;ev.preventDefault();openModal({k:'comm',i:+a.dataset.ci},a)});
-$('#more').onclick=()=>{commLimit+=PAGE;renderComm()};
+cgrid.addEventListener('click',ev=>{const a=ev.target.closest('[data-open]');if(!a)return;ev.preventDefault();openModal({k:'comm',i:+a.dataset.open},a)});
+$('#more').onclick=()=>{commLimit+=PAGE;renderComm(false)};
 $('#q').addEventListener('input',()=>{commLimit=PAGE;renderComm()});
 
 /* filtros e abas */
@@ -718,7 +780,9 @@ apply();
 
 /* pausar */
 const pauseBtns=[$('#pause'),$('#m-pause')];
-function setPlaying(p){playing=p;pauseBtns.forEach((b,i)=>{b.setAttribute('aria-pressed',String(!p));b.querySelector('span').textContent=p?(i?'Pausar':'Pausar prévias'):(i?'Reproduzir':'Reproduzir prévias')});views.forEach(v=>v.dirty=true);document.querySelectorAll('video').forEach(v=>{try{p?v.play():v.pause()}catch(e){}})}
+function setPlaying(p){playing=p;pauseBtns.forEach((b,i)=>{b.setAttribute('aria-pressed',String(!p));b.querySelector('span').textContent=p?(i?'Pausar':'Pausar prévias'):(i?'Reproduzir':'Reproduzir prévias')});views.forEach(v=>v.dirty=true);
+  document.querySelectorAll('#grid video,#stage video').forEach(v=>{try{const r=p?v.play():v.pause();if(r&&r.catch)r.catch(()=>{})}catch(e){}});
+  document.querySelectorAll('#cgrid .mcard').forEach(syncPlay)}
 pauseBtns.forEach(b=>b.addEventListener('click',()=>setPlaying(!playing)));
 setPlaying(playing);
 
@@ -726,7 +790,7 @@ setPlaying(playing);
 const modal=$('#modal'),stage=$('#stage');let cur=null,mView=null,returnFocus=null;
 function setPrompt(text,label){$('#m-promptbox').hidden=!text;$('#m-prompt').textContent=text||'';$('#m-ph').textContent=label;const cp=$('#copy');cp.textContent='Copiar';cp.classList.remove('ok')}
 function fill(item){cur=item;dropView(mView);mView=null;stage.innerHTML='';
-  stage.classList.toggle('embed',item.k==='comm');
+  stage.classList.toggle('embed',item.k==='comm');stage.classList.remove('vid','tall');stage.style.aspectRatio='';
   if(item.k==='mine'){const e=ENTRIES[item.i];
     if(e.video){const v=document.createElement('video');v.src=e.video;v.muted=true;v.loop=true;v.playsInline=true;v.controls=true;v.autoplay=playing;stage.appendChild(v)}
     else{const c=document.createElement('canvas');c.setAttribute('aria-label','Prévia animada: '+e.title);stage.appendChild(c);mView=addView(c,e)}
@@ -738,8 +802,12 @@ function fill(item){cur=item;dropView(mView);mView=null;stage.innerHTML='';
     try{history.replaceState(null,'','#'+e.slug)}catch(err){}
   }else{const e=COMM[item.i],t=thumbArt(e.slug),ini=initial(e.handle);
     stage.classList.remove('vertical');$('#fmt-h').setAttribute('aria-pressed','true');$('#fmt-v').setAttribute('aria-pressed','false');
-    stage.innerHTML=`<div class="tw"><div class="tw-load"><span class="av ini-av">${ini}</span>Carregando o post de @${esc(e.handle)}…</div></div>`;
-    loadTweet(e,stage.querySelector('.tw'));
+    stage.innerHTML=`<div class="tw"><div class="tw-load"><span class="av ini-av">${ini}</span>Carregando o vídeo de @${esc(e.handle)}…</div></div>`;
+    resolveTweet(e).then(m=>{if(!cur||cur.k!=='comm'||COMM[cur.i]!==e)return;
+      stage.classList.remove('embed');stage.classList.add('vid');stage.classList.toggle('tall',m.h>m.w);stage.style.aspectRatio=m.w+' / '+m.h;
+      stage.innerHTML=`<video src="${esc(m.src)}" ${m.thumb?`poster="${esc(m.thumb)}"`:''} controls muted loop playsinline ${playing?'autoplay':''}></video>`;
+      const v=stage.querySelector('video');v.muted=true;if(playing){const r=v.play();if(r&&r.catch)r.catch(()=>{})}
+    }).catch(()=>{if(!cur||cur.k!=='comm'||COMM[cur.i]!==e)return;const box=stage.querySelector('.tw');if(box)loadTweet(e,box)});
     $('.stage-tools').hidden=true;
     $('#m-author').href=e.x;$('#m-av').className='av ini-av';$('#m-av').textContent=ini;$('#m-name').textContent=e.handle;$('#m-handle').textContent='@'+e.handle+' no X';
     $('#m-title').textContent=e.title;$('#m-tags').innerHTML=[...e.types,...e.tags].map(t=>`<li>${esc(t)}</li>`).join('');
