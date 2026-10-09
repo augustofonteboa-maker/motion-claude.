@@ -162,7 +162,8 @@ footer nav{display:flex;gap:18px}
 .media .ph{position:absolute;inset:0;opacity:.55}
 .media .ph svg{width:100%;height:100%;display:block}
 .media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s;background:transparent}
-.mcard.live .media video{opacity:1}
+.mcard.live .media video,.mcard.poster .media video{opacity:1}
+.mcard.poster:not(.live) .media::after{display:none}
 .mcard:not(.live):not(.nov) .media::after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px;border-radius:50%;border:2px solid rgba(250,245,255,.25);border-top-color:var(--lilac);animation:spin .9s linear infinite}
 .mcard.nov .media::after{content:"▶ ver no X";position:absolute;right:8px;bottom:8px;font-family:var(--f-mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:rgba(20,7,31,.75);color:var(--fg)}
 .media:hover{transform:translateY(-3px);border-color:var(--violet);box-shadow:0 14px 30px -18px rgba(175,94,255,.7)}
@@ -668,13 +669,17 @@ const twMem={},twMeta={};
 const fq=[];let fActive=0;
 function enqueue(fn){return new Promise((res,rej)=>{fq.push([fn,res,rej]);pump()})}
 function pump(){while(fActive<6&&fq.length){const[fn,res,rej]=fq.shift();fActive++;fn().then(res,rej).finally(()=>{fActive--;pump()})}}
+const sameUser=(a,b)=>!!a&&String(a).toLowerCase()===String(b).toLowerCase();
 function pickVariant(v){const vs=(v.variants||[]).filter(x=>x&&x.url&&String(x.content_type||x.type||'').includes('mp4'));
   if(!vs.length)return v.url;vs.sort((a,b)=>(a.bitrate||0)-(b.bitrate||0));let best=vs[0];for(const x of vs)if((x.bitrate||0)<=2200000)best=x;return best.url}
 async function viaFx(e){const r=await fetch(`https://api.fxtwitter.com/${encodeURIComponent(e.handle)}/status/${e.tid}`);if(!r.ok)throw new Error('fx');
-  const j=await r.json(),tw=j.tweet||{},v=((tw.media||{}).videos||[])[0];if(!v)throw new Error('fx-novideo');
+  const j=await r.json(),tw=j.tweet||{},q=tw.quote||{};
+  /* post que cita um vídeo: só usa o vídeo citado se ele for do mesmo autor, para o crédito continuar certo */
+  const v=((tw.media||{}).videos||[])[0]||(sameUser((q.author||{}).screen_name,e.handle)?((q.media||{}).videos||[])[0]:null);if(!v)throw new Error('fx-novideo');
   return{src:pickVariant(v),thumb:v.thumbnail_url||'',w:v.width||16,h:v.height||9,avatar:(tw.author||{}).avatar_url||'',name:(tw.author||{}).name||''}}
 async function viaVx(e){const r=await fetch(`https://api.vxtwitter.com/${encodeURIComponent(e.handle)}/status/${e.tid}`);if(!r.ok)throw new Error('vx');
-  const j=await r.json(),v=(j.media_extended||[]).find(m=>m.type==='video'||m.type==='gif');if(!v)throw new Error('vx-novideo');
+  const j=await r.json(),isV=m=>m.type==='video'||m.type==='gif',q=j.qrt||{};
+  const v=(j.media_extended||[]).find(isV)||(sameUser(q.user_screen_name,e.handle)?(q.media_extended||[]).find(isV):null);if(!v)throw new Error('vx-novideo');
   return{src:v.url,thumb:v.thumbnail_url||'',w:(v.size||{}).width||16,h:(v.size||{}).height||9,avatar:j.user_profile_image_url||'',name:j.user_name||''}}
 function resolveTweet(e){if(twMem[e.tid])return twMem[e.tid];
   let cached=null;try{const c=JSON.parse(localStorage.getItem('fm1-'+e.tid)||'null');if(c&&c.src&&Date.now()-c.t<3*864e5)cached=c}catch(_){}
@@ -689,7 +694,7 @@ function masonry(box,nodes){const n=colsFor(box.clientWidth||window.innerWidth);
 window.addEventListener('resize',()=>{const b=document.getElementById('cgrid');if(b&&b._nodes&&b._nodes.length&&colsFor(b.clientWidth)!==b._n)masonry(b,b._nodes)});
 function syncPlay(card){const v=card.querySelector('video');if(!v||!v.getAttribute('src'))return;if(card._vis&&playing){v.muted=true;const p=v.play();if(p&&p.catch)p.catch(()=>{})}else v.pause()}
 function applyMeta(card,m){const a=card.querySelector('.media');a.style.aspectRatio=m.w+' / '+m.h;const v=card.querySelector('video');
-  v.muted=true;if(m.thumb)v.poster=m.thumb;v.addEventListener('loadeddata',()=>card.classList.add('live'),{once:true});v.src=m.src;
+  v.muted=true;if(m.thumb){v.poster=m.thumb;card.classList.add('poster')}v.addEventListener('loadeddata',()=>card.classList.add('live'),{once:true});v.src=m.src;
   if(m.avatar){const p=card.querySelector('.pic');if(p&&!p.querySelector('img')){const im=new Image();im.alt='';im.loading='lazy';im.referrerPolicy='no-referrer';im.onerror=()=>im.remove();im.src=m.avatar;p.appendChild(im)}}}
 function hydrate(card,e){if(card._h)return;card._h=1;resolveTweet(e).then(m=>{applyMeta(card,m);syncPlay(card)}).catch(()=>card.classList.add('nov'))}
 const vio=new IntersectionObserver(es=>{for(const en of es){const card=en.target;card._vis=en.isIntersecting;if(en.isIntersecting)hydrate(card,COMM[+card.dataset.ci]);syncPlay(card)}},{rootMargin:'300px 0px'});
