@@ -281,7 +281,7 @@ a.by:hover .h{text-decoration:underline;text-underline-offset:3px}
 <main class="wrap">
   <div class="grid" id="grid"></div>
   <section id="comm" hidden aria-label="Comunidade">
-    <p class="comm-note">Motions feitos com o Claude por outros criadores, exibidos com autorização. Cada vídeo vem do post original no X e pertence ao autor indicado embaixo dele, o dono oficial. Toque no @ para ver o perfil ou no vídeo para abrir o motion. Lista via <a href="https://www.prompt-motion.com/" target="_blank" rel="noopener">Prompt Motion</a>, curadoria de <a href="https://x.com/p4nthera_" target="_blank" rel="noopener">@p4nthera_</a>.</p>
+    <p class="comm-note">Motions feitos com o Claude por outros criadores, exibidos com autorização. Cada vídeo vem do post original no X e pertence ao autor indicado embaixo dele, o dono oficial. Toque no vídeo para abrir o motion com o prompt completo, ou no @ para ver o perfil do autor.</p>
     <div class="masonry" id="cgrid"></div>
     <div class="more"><button class="chip" id="more">Carregar mais</button><span id="more-count"></span></div>
   </section>
@@ -318,10 +318,9 @@ a.by:hover .h{text-decoration:underline;text-underline-offset:3px}
       <h2 id="m-title"></h2>
       <ul class="m-tags" id="m-tags"></ul>
       <section class="credit" id="m-credit" hidden>
-        <p>Dono oficial do vídeo: <b id="m-credit-name"></b>. O vídeo vem do post original no X e o prompt é o mesmo que o criador publicou lá, copiado do Prompt Motion, com crédito. Ambos pertencem ao autor.</p>
+        <p>Dono oficial do vídeo: <b id="m-credit-name"></b>. O vídeo e o prompt foram publicados por ele no X e são exibidos aqui com crédito. Ambos pertencem ao autor.</p>
         <div class="credit-actions">
-          <a class="btn" id="m-orig" href="#" target="_blank" rel="noopener">Ver na fonte ↗</a>
-          <a class="pill" id="m-x" href="#" target="_blank" rel="noopener">Abrir post no X ↗</a>
+          <a class="btn" id="m-x" href="#" target="_blank" rel="noopener">Abrir post no X ↗</a>
         </div>
       </section>
       <section class="prompt" id="m-promptbox" aria-labelledby="m-ph">
@@ -661,7 +660,7 @@ const COMM_RAW=[["stephanlivera","stephanlivera-df17a2","P","Claude motion desig
 const COMM_PROMPTS=window.COMM_PROMPTS||{};
 const COMM=COMM_RAW.map(([h,slug,t,title,tags,date,tid])=>({handle:h,slug,title,tags,date,tid,
   types:t==='S'?['Skill']:t==='PS'?['Prompt','Skill']:['Prompt'],
-  url:'https://www.prompt-motion.com/'+slug,x:'https://x.com/'+h,post:`https://x.com/${h}/status/${tid}`}));
+  x:'https://x.com/'+h,post:`https://x.com/${h}/status/${tid}`}));
 COMM.forEach(e=>{e.typeLabel=e.types.join(' + ');Object.assign(e,COMM_PROMPTS[e.slug]||{})});
 
 /* post original do X embutido (iframe oficial do X, criado pelo widgets.js) */
@@ -836,9 +835,9 @@ function fill(item){cur=item;dropView(mView);mView=null;stage.innerHTML='';
     $('.stage-tools').hidden=true;
     $('#m-author').href=e.x;$('#m-av').className='av ini-av';$('#m-av').textContent=ini;$('#m-name').textContent=e.handle;$('#m-handle').textContent='@'+e.handle+' no X';
     $('#m-title').textContent=e.title;$('#m-tags').innerHTML=[...e.types,...e.tags].map(t=>`<li>${esc(t)}</li>`).join('');
-    $('#m-credit').hidden=false;$('#m-credit-name').textContent='@'+e.handle;$('#m-orig').href=e.url;$('#m-x').href=e.post;
+    $('#m-credit').hidden=false;$('#m-credit-name').textContent='@'+e.handle;$('#m-x').href=e.post;
     setPrompt(e.prompt,'Prompt de @'+e.handle);setSkill(e.skill);
-    $('#m-meta').innerHTML=[['Autor','@'+e.handle],['Modelo','Claude Opus 5.5'],['Esforço',e.effort],['Iterações',e.iterations],['Ferramenta',e.stack],['Tipo',e.typeLabel],['Publicado',fmtDate(e.date)],['Fonte','Prompt Motion, curadoria @p4nthera_']].filter(r=>r[1]).map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)}</dd>`).join('');
+    $('#m-meta').innerHTML=[['Autor','@'+e.handle],['Modelo','Claude Opus 5.5'],['Esforço',e.effort],['Iterações',e.iterations],['Ferramenta',e.stack],['Tipo',e.typeLabel],['Publicado',fmtDate(e.date)]].filter(r=>r[1]).map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)}</dd>`).join('');
     try{history.replaceState(null,'','#c-'+e.slug)}catch(err){}
   }
 }
