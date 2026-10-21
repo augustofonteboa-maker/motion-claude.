@@ -2,7 +2,7 @@
 
 Galeria de motions feitos com o Claude por [@_augustofonte](https://www.instagram.com/_augustofonte/), com o prompt de cada vídeo para copiar.
 
-A aba **Comunidade** lista motions de outros criadores, com crédito: o vídeo toca do post original do autor no X, com o prompt completo ao lado e o crédito do criador. Os vídeos e prompts da comunidade pertencem aos seus autores.
+A aba **Comunidade** lista motions de outros criadores, com crédito: o vídeo toca do post original do autor no X, com o prompt original ao lado e, num segundo passo ("Ver prompt completo"), a versão completa e estruturada para copiar e o crédito do criador. Os vídeos e prompts da comunidade pertencem aos seus autores.
 
 ## Como editar
 - Seus motions: array `ENTRIES` no `index.html` (título, prompt, tags, data e, se quiser, `video` com o caminho do .mp4).

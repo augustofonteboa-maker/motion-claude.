@@ -151,6 +151,17 @@ footer nav{display:flex;gap:18px}
 .prompt.clamp.open pre{max-height:none;-webkit-mask-image:none;mask-image:none}
 .more{display:block;width:100%;border:0;border-top:1px solid var(--line);background:transparent;color:var(--lilac);font:600 12.5px var(--f-display);padding:10px;cursor:pointer;border-radius:0 0 14px 14px}
 .more:hover{background:rgba(255,255,255,.04)}
+.fullbtn{align-self:stretch;text-align:center;border:0;cursor:pointer;font:inherit}
+.fullbox{display:flex;flex-direction:column;gap:12px}
+.fullbox[hidden]{display:none}
+.fullbox .ph{border:1px solid var(--line);border-radius:14px 14px 0 0;background:var(--surface);margin-bottom:-12px}
+.fullbox pre{margin:0;padding:14px;border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;background:var(--surface);white-space:pre-wrap;word-wrap:break-word;font-family:var(--f-mono);font-size:12.5px;line-height:1.65;color:var(--fg)}
+.back{align-self:flex-start;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer}
+.back:hover{color:var(--fg);border-color:var(--line-2)}
+.full-note{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.steps{margin:0;padding-left:20px;font-size:13.5px;line-height:1.55;display:flex;flex-direction:column;gap:4px}
+.copy-big{align-self:stretch;padding:11px 14px;font-size:14px}
+.info.full>:not(.m-top):not(h2):not(#m-full){display:none!important}
 .skillbox{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:14px;display:flex;flex-direction:column;gap:10px}
 .skillbox h3{margin:0;font-family:var(--f-mono);font-weight:500;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--lilac)}
 .skillbox p{margin:0;font-size:13.5px;line-height:1.55;color:var(--fg)}
@@ -327,6 +338,15 @@ a.by:hover .h{text-decoration:underline;text-underline-offset:3px}
         <div class="ph"><h3 id="m-ph">Prompt</h3><button class="copy" id="copy">Copiar</button></div>
         <pre id="m-prompt"></pre>
         <button class="more" id="m-more" type="button" aria-expanded="false" hidden>Mostrar tudo</button>
+      </section>
+      <button class="btn fullbtn" id="m-fullbtn" type="button" hidden>Ver prompt completo <span aria-hidden="true">→</span></button>
+      <section class="fullbox" id="m-full" hidden aria-labelledby="m-fh">
+        <button class="back" id="m-back" type="button">← Voltar ao vídeo</button>
+        <div class="ph"><h3 id="m-fh">Prompt completo</h3><button class="copy" id="copy-full" type="button">Copiar prompt completo</button></div>
+        <p class="full-note" id="m-full-note"></p>
+        <ol class="steps"><li><b>Copie</b> o prompt completo abaixo.</li><li><b>Cole no Claude</b> (de preferência Opus 5.5 com esforço no máximo). Funciona em português também: ele responde no seu idioma.</li><li><b>Responda</b> o que ele pedir (marca, cores, texto, música) ou deixe os padrões. Ele mostra o storyboard e constrói o vídeo.</li></ol>
+        <pre id="m-full-text"></pre>
+        <button class="copy copy-big" id="copy-full2" type="button">Copiar prompt completo</button>
       </section>
       <section class="skillbox" id="m-skill" hidden>
         <h3>Skill</h3><p id="m-skill-desc"></p><pre id="m-skill-cmd"></pre>
@@ -813,7 +833,13 @@ function fitPrompt(){const box=$('#m-promptbox'),pre=$('#m-prompt');if(box.hidde
 $('#m-more').addEventListener('click',()=>{const box=$('#m-promptbox'),on=!box.classList.contains('open');box.classList.toggle('open',on);$('#m-more').textContent=on?'Mostrar menos':'Mostrar tudo';$('#m-more').setAttribute('aria-expanded',String(on))});
 function setSkill(s){const b=$('#m-skill');b.hidden=!s;if(!s)return;$('#m-skill-desc').textContent=s.desc;$('#m-skill-cmd').textContent=s.install.join('\n');$('#m-skill-repo').href=s.repo;$('#copy-skill').textContent='Copiar comando'}
 $('#copy-skill').addEventListener('click',()=>{const b=$('#copy-skill');try{navigator.clipboard.writeText($('#m-skill-cmd').textContent).then(()=>{b.textContent='Copiado'})}catch(err){}})
-function fill(item){cur=item;dropView(mView);mView=null;stage.innerHTML='';
+function setFull(e){const has=!!(e&&e.full);$('#m-fullbtn').hidden=!has;$('#m-full').hidden=true;document.querySelector('.info').classList.remove('full');
+  if(has){$('#m-full-text').textContent=e.full;$('#m-full-note').textContent=e.tested?'Versão estruturada e testada: o vídeo foi feito com ela.':'Versão estruturada a partir do prompt original, com conceito, tempo, proibidos e método de render.';$('#copy-full').textContent=$('#copy-full2').textContent='Copiar prompt completo'}}
+function showFull(on){const info=document.querySelector('.info');info.classList.toggle('full',on);$('#m-full').hidden=!on;if(on){$('#m-full').scrollIntoView({block:'start'});$('.panel').scrollTop=0}}
+$('#m-fullbtn').addEventListener('click',()=>showFull(true));$('#m-back').addEventListener('click',()=>showFull(false));
+['#copy-full','#copy-full2'].forEach(id=>$(id).addEventListener('click',()=>{const txt=$('#m-full-text').textContent;const done=()=>['#copy-full','#copy-full2'].forEach(i=>{$(i).textContent='Copiado';setTimeout(()=>$(i).textContent='Copiar prompt completo',1600)});
+  try{navigator.clipboard.writeText(txt).then(done,()=>{const r=document.createRange();r.selectNodeContents($('#m-full-text'));const s=getSelection();s.removeAllRanges();s.addRange(r)})}catch(err){}}));
+function fill(item){cur=item;setFull(null);dropView(mView);mView=null;stage.innerHTML='';
   stage.classList.toggle('embed',item.k==='comm');stage.classList.remove('vid','tall');stage.style.aspectRatio='';
   if(item.k==='mine'){const e=ENTRIES[item.i];
     if(e.video){const v=document.createElement('video');v.src=e.video;v.muted=true;v.loop=true;v.playsInline=true;v.controls=true;v.autoplay=playing;stage.appendChild(v)}
@@ -836,7 +862,7 @@ function fill(item){cur=item;dropView(mView);mView=null;stage.innerHTML='';
     $('#m-author').href=e.x;$('#m-av').className='av ini-av';$('#m-av').textContent=ini;$('#m-name').textContent=e.handle;$('#m-handle').textContent='@'+e.handle+' no X';
     $('#m-title').textContent=e.title;$('#m-tags').innerHTML=[...e.types,...e.tags].map(t=>`<li>${esc(t)}</li>`).join('');
     $('#m-credit').hidden=false;$('#m-credit-name').textContent='@'+e.handle;$('#m-x').href=e.post;
-    setPrompt(e.prompt,'Prompt de @'+e.handle);setSkill(e.skill);
+    setPrompt(e.prompt,e.full?'Prompt original de @'+e.handle:'Prompt de @'+e.handle);setSkill(e.skill);setFull(e);
     $('#m-meta').innerHTML=[['Autor','@'+e.handle],['Modelo','Claude Opus 5.5'],['Esforço',e.effort],['Iterações',e.iterations],['Ferramenta',e.stack],['Tipo',e.typeLabel],['Publicado',fmtDate(e.date)]].filter(r=>r[1]).map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)}</dd>`).join('');
     try{history.replaceState(null,'','#c-'+e.slug)}catch(err){}
   }
